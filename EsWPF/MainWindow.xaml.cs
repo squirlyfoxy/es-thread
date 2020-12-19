@@ -24,6 +24,10 @@ namespace EsWPF
     {
         Thread simulationThread;
 
+        //TODO: DA POPOLARE
+        Uri UriGicoatore1 = new Uri("");
+        Uri UriGicoatore2 = new Uri("");
+
         public MainWindow()
         {
             //Thread

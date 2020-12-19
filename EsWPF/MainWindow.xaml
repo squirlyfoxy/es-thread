@@ -7,6 +7,10 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        
+        <Image x:Name="imgBackground" HorizontalAlignment="Left" Height="504" VerticalAlignment="Top" Width="792" Source="background.png" Stretch="Fill" Margin="0,0,0,-85"/>
+
+        <!-- IMMAGINI GIOCAOTORI-->
+        <Image x:Name="imgGiocatore1" />
+        <Image x:Name="imgGiocatore2" />
     </Grid>
 </Window>
