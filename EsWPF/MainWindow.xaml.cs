@@ -19,6 +19,11 @@ using System.Windows.Interop;
 
 namespace EsWPF
 {
+    //TODO: MUOVI LE CLASSI IN FILE SEPARATI
+
+    /// <summary>
+    /// Classe che descrive un pixel dello screenshot
+    /// </summary>
     public class Pixel
     {
         public System.Drawing.Color Color { get; set; }
@@ -49,13 +54,22 @@ namespace EsWPF
         Thread t2;
         Thread finishController;
 
+        /// <summary>
+        /// VELOCITà MOVIMENTO PRIMO SCOOTER
+        /// </summary>
         public float VelocitaG1 { get; set; } = 5.3f; 
-        public float VelocitaG2 { get; set; } = 4.3f;
 
         /// <summary>
-        /// Quante volte il thread deve essere eseguito in un secondo
+        /// VELOCITà MOVIMENTO SECONDO SCOOTER
         /// </summary>
-        public const int VPS = 60;
+        public float VelocitaG2 { get; set; } = 4.3f;
+
+        //VPF = Volte Per Secondo
+
+        /// <summary>
+        /// Quante volte un thread deve essere eseguito in un secondo
+        /// </summary>
+        public const double VPS = 60.0;
 
         /// <summary>
         /// Raggio screenshot AI
@@ -64,54 +78,156 @@ namespace EsWPF
 
         private void posG1()
         {
-            while(t1.IsAlive)
+            int currentVPS = 0;
+
+            DateTime prevDateTime = DateTime.Now;
+            double msPrimaDiFrame = 1000.0 / VPS;
+            DateTime now;
+
+            while (t1.IsAlive)
             {
-                Thread.Sleep(1);
+                now = DateTime.Now;
 
                 //MUOVI G1
-
-                this.Dispatcher.BeginInvoke(new Action(() =>
+                //Controlla se è passato un secondo
+                if (now.Second >= prevDateTime.Second + 1)
                 {
-                    Bitmap s = Screenshot(G1);
+                    //Stampa i VPS
+                    Debug.WriteLine("VPS THREAD G1: " + currentVPS);
 
-                    System.Drawing.Color[,] dim = new System.Drawing.Color[s.Width, s.Height];
-                    //Populate px
-                    for(int x = 0; x < s.Width; x++)
+                    currentVPS = 0;
+                    prevDateTime = now;
+                } else
+                {
+                    //Controlla se sono passati "msPrimaDiFrame" millisecondi
+                    if (now.Millisecond >= prevDateTime.Millisecond + msPrimaDiFrame)
                     {
-                        for (int y = 0; y < s.Height; y++)
+                        //Frame
+                        this.Dispatcher.BeginInvoke(new Action(() =>
                         {
-                            dim[x, y] = s.GetPixel(x, y);
-                        }
-                    }
+                            Bitmap s = Screenshot(G1);
 
-                    //
-                }));
+                            Pixel[,] dim = new Pixel[s.Width, s.Height];
+
+                            //Populate px
+                            for (int x = 0; x < s.Width; x++)
+                            {
+                                for (int y = 0; y < s.Height; y++)
+                                {
+                                    dim[x, y] = new Pixel(s.GetPixel(x, y), x, y);
+                                }
+                            }
+
+                            //AI SECTION
+
+                            ///
+                            /// Schema funzionamento (teorico):
+                            /// Leggo tutta la matrice e individuo le aree che coincidono con il cambiamento di colore dei pixel (bianco == non andare, nero == continua ad andare)
+                            /// farò in modo che l'immagine si muova verso la quantità maggiore possibile di pixel neri cambiano, se necessario, la direzione
+                            /// 
+                            ///
+                        }));
+
+                        currentVPS++;
+                        prevDateTime = now;
+                    }
+                }
             }
         }
 
         private void posG2()
         {
+            int currentVPS = 0;
+
+            DateTime prevDateTime = DateTime.Now;
+            double msPrimaDiFrame = 1000.0 / VPS;
+            DateTime now;
+
             while (t2.IsAlive)
             {
-                Thread.Sleep(1);
+                now = DateTime.Now;
 
                 //MUOVI G2
-
-                this.Dispatcher.BeginInvoke(new Action(() =>
+                //Controlla se è passato un secondo
+                if (now.Second >= prevDateTime.Second + 1)
                 {
-                    Bitmap s = Screenshot(G2);
-                }));
+                    //Stampa i VPS
+                    Debug.WriteLine("VPS THREAD G2: " + currentVPS);
+
+                    currentVPS = 0;
+                    prevDateTime = now;
+                }
+                else
+                {
+                    //Controlla se sono passati "msPrimaDiFrame" millisecondi
+                    if (now.Millisecond >= prevDateTime.Millisecond + msPrimaDiFrame)
+                    {
+                        this.Dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            Bitmap s = Screenshot(G2);
+
+                            Pixel[,] dim = new Pixel[s.Width, s.Height];
+
+                            //Populate px
+                            for (int x = 0; x < s.Width; x++)
+                            {
+                                for (int y = 0; y < s.Height; y++)
+                                {
+                                    dim[x, y] = new Pixel(s.GetPixel(x, y), x, y);
+                                }
+                            }
+
+                            //AI SECTION
+                        }));
+
+                        currentVPS++;
+                        prevDateTime = now;
+                    }
+                }
 
             }
         }
 
         private void FinishController()
         {
+            int currentVPS = 0;
+
+            DateTime prevDateTime = DateTime.Now;
+            double msPrimaDiFrame = 1000.0 / VPS;
+            DateTime now;
+
             while (finishController.IsAlive)
             {
                 Thread.Sleep(10);
 
-                //COLLISION DETECTION
+                now = DateTime.Now;
+
+                //Controlla se è passato un secondo
+                if (now.Second >= prevDateTime.Second + 1)
+                {
+                    //Stampa i VPS
+                    Debug.WriteLine("VPS THREAD FC: " + currentVPS);
+
+                    currentVPS = 0;
+                    prevDateTime = now;
+                }
+                else
+                {
+                    //Controlla se sono passati "msPrimaDiFrame" millisecondi
+                    if (now.Millisecond >= prevDateTime.Millisecond + msPrimaDiFrame)
+                    {
+                        //Frame
+
+                        //COLLISION DETECTION
+
+                        ///
+                        /// Il seguente codice dovrà capire quando uno dei due scooter taglia il traguardo
+                        ///
+
+                        currentVPS++;
+                        prevDateTime = now;
+                    }
+                }
             }
         }
 
