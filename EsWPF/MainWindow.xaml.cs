@@ -22,66 +22,44 @@ namespace EsWPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        Thread simulationThread;
-
-        //TODO: DA POPOLARE
-        Uri UriGicoatore1 = new Uri("");
-        Uri UriGicoatore2 = new Uri("");
-
         public MainWindow()
         {
-            //Thread
-            simulationThread = new Thread(new ThreadStart(SimulationLoop));
-
             InitializeComponent();
         }
 
-        //Momento precedente
-        private DateTime prevDateTime;
+        Thread t1;
+        Thread t2;
+        Thread finishController;
 
-        //FPS
-        public int CurrentFPS { get; private set; }
-        public const double FPS_TO_BLOCK = 60.0; //FPS fissi
-
-        private void SimulationLoop()
+        private void posG1()
         {
-            double msPrimaDiFrame = 1000.0 / FPS_TO_BLOCK;
-            Debug.WriteLine(msPrimaDiFrame);
-
-            prevDateTime = DateTime.Now;
-
-            Application.Current.Dispatcher.Invoke(new Action(() => 
+            while(t1.IsAlive)
             {
-                DateTime ora;
+                //MUOVI G1
+            }
+        }
 
-                //Loop simulazione
-                while (simulationThread.IsAlive)
-                {
-                    ora = DateTime.Now;
+        private void posG2()
+        {
+            while (t2.IsAlive)
+            {
+                //MUOVI G2
+            }
+        }
 
-                    //Controlla se è passato un secondo
-                    if(ora.Second >= prevDateTime.Second + 1)
-                    {
-                        //Stampa gli FPS
-                        Debug.WriteLine("FPS: " + CurrentFPS);
+        private void FinishController()
+        {
+            while (finishController.IsAlive)
+            {
+                //COLLISION DETECTION
+            }
+        }
 
-                        CurrentFPS = 0;
-                        prevDateTime = ora;
-                    }
-                    else
-                    {
-                        //Controlla se sono passati "msPrimaDiFrame" millisecondi
-                        if (ora.Millisecond >= prevDateTime.Millisecond + msPrimaDiFrame)
-                        {
-                            //Frame
-
-
-                            CurrentFPS++;
-                            prevDateTime = ora;
-                        }
-                    }
-                }
-            }));
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            t1 = new Thread(new ThreadStart(posG1)); t1.Start();
+            t2 = new Thread(new ThreadStart(posG2)); t2.Start();
+            finishController = new Thread(new ThreadStart(FinishController)); finishController.Start();
         }
     }
 }
