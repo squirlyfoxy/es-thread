@@ -28,3 +28,5 @@ C:\Users\foxch\Desktop\es-thread\EsWPF\obj\Debug\EsWPF.csproj.GenerateResource.c
 C:\Users\foxch\Desktop\es-thread\EsWPF\obj\Debug\EsWPF.csproj.CoreCompileInputs.cache
 C:\Users\foxch\Desktop\es-thread\EsWPF\obj\Debug\EsWPF.exe
 C:\Users\foxch\Desktop\es-thread\EsWPF\obj\Debug\EsWPF.pdb
+C:\Users\foxch\Desktop\es-thread\EsWPF\bin\Debug\System.Drawing.Common.dll
+C:\Users\foxch\Desktop\es-thread\EsWPF\obj\Debug\EsWPF.csproj.CopyComplete
