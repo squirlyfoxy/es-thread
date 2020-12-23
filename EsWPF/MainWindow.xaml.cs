@@ -69,7 +69,7 @@ namespace EsWPF
         /// <summary>
         /// Quante volte un thread deve essere eseguito in un secondo
         /// </summary>
-        public const double VPS = 60.0;
+        public const double VPS = 10000000000000.0;
 
         //TODO: MEGLIO UNA COSTANTE
 
@@ -120,7 +120,7 @@ namespace EsWPF
                                 }
                             }
 
-                            s.Save("gg.png");
+                            //s.Save("gg.png");
 
                             //AI SECTION
 
@@ -144,7 +144,8 @@ namespace EsWPF
 
                         currentVPS++;
                         prevDateTime = now;
-                    }
+                    } else
+                        prevDateTime = now;
                 }
             }
         }
@@ -197,6 +198,8 @@ namespace EsWPF
                         currentVPS++;
                         prevDateTime = now;
                     }
+                    else
+                        prevDateTime = now;
                 }
 
             }
@@ -212,7 +215,7 @@ namespace EsWPF
 
             while (finishController.IsAlive)
             {
-                Thread.Sleep(10);
+                Thread.Sleep(100);
 
                 now = DateTime.Now;
 
