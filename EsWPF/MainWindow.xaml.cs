@@ -21,6 +21,10 @@ namespace EsWPF
 {
     //TODO: MUOVI LE CLASSI IN FILE SEPARATI
 
+    ///
+    /// Programmer: Leonardo Baldazzi (@squirlyfoxy)
+    ///
+
     /// <summary>
     /// Classe che descrive un pixel dello screenshot
     /// </summary>
@@ -69,7 +73,7 @@ namespace EsWPF
         /// <summary>
         /// Quante volte un thread deve essere eseguito in un secondo
         /// </summary>
-        public const double VPS = 10000000000000.0;
+        public const double VPS = 1000000000.0;
 
         //TODO: MEGLIO UNA COSTANTE
 
@@ -134,7 +138,7 @@ namespace EsWPF
                             /// Se lo screenshot è tutto nero continuo con il movimento precedente
                             ///
 
-                            int cosaFare = AI.Process(dim);
+                            int cosaFare = new AI().Process(dim);
 
                             switch(cosaFare)
                             {
@@ -143,10 +147,11 @@ namespace EsWPF
                         }));
 
                         currentVPS++;
-                        prevDateTime = now;
-                    } else
-                        prevDateTime = now;
+                    } 
+                        
                 }
+
+                prevDateTime = now;
             }
         }
 
@@ -196,12 +201,10 @@ namespace EsWPF
                         }));
 
                         currentVPS++;
-                        prevDateTime = now;
                     }
-                    else
-                        prevDateTime = now;
                 }
 
+                prevDateTime = now;
             }
         }
 
