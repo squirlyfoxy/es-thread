@@ -71,6 +71,8 @@ namespace EsWPF
         /// </summary>
         public const double VPS = 60.0;
 
+        //TODO: MEGLIO UNA COSTANTE
+
         /// <summary>
         /// Raggio screenshot AI
         /// </summary>
@@ -108,7 +110,7 @@ namespace EsWPF
                             Bitmap s = Screenshot(G1);
 
                             Pixel[,] dim = new Pixel[s.Width, s.Height];
-
+                            
                             //Populate px
                             for (int x = 0; x < s.Width; x++)
                             {
@@ -118,14 +120,26 @@ namespace EsWPF
                                 }
                             }
 
+                            s.Save("gg.png");
+
                             //AI SECTION
 
                             ///
                             /// Schema funzionamento (teorico):
                             /// Leggo tutta la matrice e individuo le aree che coincidono con il cambiamento di colore dei pixel (bianco == non andare, nero == continua ad andare)
                             /// farò in modo che l'immagine si muova verso la quantità maggiore possibile di pixel neri cambiano, se necessario, la direzione
+                            /// Per fare ciò l'immagine verrà divisa in 4 e per ogni lato farò la media della quantità di pixel neri tra i due blocchi da 16px del lato
+                            /// Il lato con maggiore quantità di px neri sarà il vincente
                             /// 
+                            /// Se lo screenshot è tutto nero continuo con il movimento precedente
                             ///
+
+                            int cosaFare = AI.Process(dim);
+
+                            switch(cosaFare)
+                            {
+
+                            }
                         }));
 
                         currentVPS++;

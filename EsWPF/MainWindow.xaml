@@ -10,8 +10,8 @@
         <Image x:Name="imgBackground" HorizontalAlignment="Left" Height="504" VerticalAlignment="Top" Width="792" Source="background.png" Stretch="Fill" Margin="0,0,0,-85"/>
 
         <!-- IMMAGINI GIOCAOTORI-->
-        <Image x:Name="G1" Stretch="Fill" Margin="640,113,101,245" Source="pl.png" />
-        <Image x:Name="G2" Stretch="Fill" Margin="696,113,45,245" Source="pl.png" />
+        <Image x:Name="G1" Stretch="Fill" Margin="654,113,87,245" Source="pl.png" />
+        <Image x:Name="G2" Stretch="Fill" Margin="710,113,31,245" Source="pl.png" />
 
         <Button Content="Inizia" HorizontalAlignment="Left" Margin="10,386,0,0" VerticalAlignment="Top" Width="121" Height="23" Click="Button_Click"/>
         <Image x:Name="test" HorizontalAlignment="Left" Height="268" Margin="10,44,0,0" VerticalAlignment="Top" Width="347"/>
