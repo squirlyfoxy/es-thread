@@ -63,10 +63,10 @@ namespace EsWPF
             /// pos 0 = media quantità bianchi; pos 1 = media quantità neri
             ///
 
-            int[] pixelLAlto;
-            int[] pixelLBasso;
-            int[] pixelLSinistra;
-            int[] pixelLDestra;
+            int[] pixelLAlto = new int[2];
+            int[] pixelLBasso = new int[2];
+            int[] pixelLSinistra = new int[2];
+            int[] pixelLDestra = new int[2];
 
             //VARIABILI CHE RAPPRESENTANO I CONSIGLI DEI MOVIMENTI PRODOTTI DAI THREAD SOTTOSTANTI
             bool alto = false;
@@ -137,19 +137,202 @@ namespace EsWPF
             //Per debug
             System.Diagnostics.Debug.WriteLine("Destra: " + destra + " Sinistra: " + sinistra + " Su: " + alto + " Basso: " + basso);
 
-            //TODO: RAGIONARE SU COME MUOVERE L'IMMAGINE SE TUTTO è VERO
+            //RAGIONARE SU COME MUOVERE L'IMMAGINE SE TUTTO è VERO
 
             ///
             /// Ragionamento v.1
             /// 
             /// Se sta solo una variabile a vero mi muovo verso quel lato
-            /// Se sono tutti veri mi muovo o seguendo il movimento precende o verso il lato con numero maggiore di pixel neri
+            /// Se sono tutti veri mi muovo o seguendo il lato con numero maggiore di pixel neri
             /// Se sono veri in 2 o 3 mi muovo verso il lato con numero maggiore di pixel neri
             ///
 
-            int xy = 0;
+            //TODO: OTTIMIZZARE I TEMPI DEL BLOCCO DI ISTRUZIONI SOTTOSTANTE
 
-            return xy;
+            //SERVIRANNO MOLTI IF, NON LA COSA MIGLIORE CHE SI POTREBBE FARE MA PER INIZIARE...
+
+            //E' LA COSA PIù FATTA MALE CHE POTEVO FARE
+
+            //BLOCCO ISTRUZIONI SOLO 1 VARIABILE VERA
+            if(alto == true && basso == false && sinistra == false && destra == false)
+            {
+                return (int)CosaFare.Su;
+            }
+            else if (alto == false && basso == true && sinistra == false && destra == false)
+            {
+                return (int)CosaFare.Giu;
+            }
+            else if (alto == false && basso == false && sinistra == true && destra == false)
+            {
+                return (int)CosaFare.Sinsita;
+            }
+            else if (alto == false && basso == false && sinistra == false && destra == true)
+            {
+                return (int)CosaFare.Destra;
+            }
+            else
+            {
+                int nNeriAlto = pixelLAlto[1];
+                int nNeriBasso = pixelLBasso[1];
+                int nNeriSinistra = pixelLSinistra[1];
+                int nNeriDestra = pixelLDestra[1];
+
+                //SE SONO TUTTI VERI
+                if (alto == true && basso == true && sinistra == true && destra == true)
+                {
+                    //COSA PEGGIORE CHE SI POTEVA INVENTARE
+                    if(nNeriAlto >= nNeriBasso && nNeriAlto >= nNeriSinistra && nNeriAlto >= nNeriDestra)
+                    {
+                        return (int)CosaFare.Su;
+                    } else if(nNeriBasso >= nNeriAlto && nNeriBasso >= nNeriSinistra && nNeriBasso >= nNeriDestra)
+                    {
+                        return (int)CosaFare.Giu;
+                    } else if(nNeriSinistra >= nNeriAlto && nNeriSinistra >= nNeriBasso && nNeriSinistra >= nNeriDestra)
+                    {
+                        return (int)CosaFare.Sinsita;
+                    } else if(nNeriDestra >= nNeriAlto && nNeriDestra >= nNeriBasso && nNeriDestra >= nNeriSinistra)
+                    {
+                        return (int)CosaFare.Destra;
+                    } else
+                    {
+                        //NON DOVREBBE MAI CADERE QUI, MA PER ESSERE SICURI...
+                        goto ProcessaNoTuttiVeriMaNonTuttiFalsi;
+                    }
+                }
+                else
+                {
+                    //BLOCCO ISTRUZIONI SOLO 2 O 3 VERI
+                    goto ProcessaNoTuttiVeriMaNonTuttiFalsi;
+                }
+
+                //VISTO L'ELSE E AL GOTO NON DOVREI MAI ARRIVARE A QUESTA RIGA DI CODICE
+
+                //Codice richiamato 2 volte, quindi ho preferito fare un'etichetta (anche se non è la cosa miglòiore da fare in dal punto di vista della bellezza del codice)
+                ProcessaNoTuttiVeriMaNonTuttiFalsi:
+                //BLOCCO DI ISTRUZIONI PIù DISPENDIOSO DI TEMPO IN ASSOLUTO
+                if(alto == true && basso == true && sinistra == false && destra == false)   //2 VARIABILI A TRUE
+                {
+                    if(nNeriAlto >= nNeriBasso)
+                    {
+                        return (int)CosaFare.Su;
+                    }
+                    else
+                    {
+                        return (int)CosaFare.Giu;
+                    }
+                }
+                else if (alto == true && basso == false && sinistra == true && destra == false)
+                {
+                    if (nNeriAlto >= nNeriSinistra)
+                    {
+                        return (int)CosaFare.Su;
+                    }
+                    else
+                    {
+                        return (int)CosaFare.Sinsita;
+                    }
+                }
+                else if (alto == true && basso == false && sinistra == false && destra == true)
+                {
+                    if (nNeriAlto >= nNeriDestra)
+                    {
+                        return (int)CosaFare.Su;
+                    }
+                    else
+                    {
+                        return (int)CosaFare.Destra;
+                    }
+                }
+                else if (alto == false && basso == true && sinistra == true && destra == false)
+                {
+                    if (nNeriBasso >= nNeriSinistra)
+                    {
+                        return (int)CosaFare.Giu;
+                    }
+                    else
+                    {
+                        return (int)CosaFare.Sinsita;
+                    }
+                }
+                else if (alto == false && basso == true && sinistra == false && destra == true)
+                {
+                    if (nNeriBasso >= nNeriDestra)
+                    {
+                        return (int)CosaFare.Giu;
+                    }
+                    else
+                    {
+                        return (int)CosaFare.Destra;
+                    }
+                } else if(alto == false && basso == false && sinistra == true && destra == true)
+                {
+                    if (nNeriSinistra >= nNeriDestra)
+                    {
+                        return (int)CosaFare.Sinsita;
+                    }
+                    else
+                    {
+                        return (int)CosaFare.Destra;
+                    }
+                }
+                else
+                {
+                    //3 VARIABILI A TRUE
+                    if(alto == true && basso == true && sinistra == true && destra == false)
+                    {
+                        if(nNeriAlto >= nNeriBasso && nNeriAlto >= nNeriSinistra)
+                        {
+                            return (int)CosaFare.Su;
+                        } else if(nNeriBasso >= nNeriAlto && nNeriBasso >= nNeriSinistra)
+                        {
+                            return (int)CosaFare.Giu;
+                        } else
+                        {
+                            return (int)CosaFare.Sinsita;
+                        }
+                    } else if(alto == true && basso == true && sinistra == false && destra == true)
+                    {
+                        if (nNeriAlto >= nNeriBasso && nNeriAlto >= nNeriDestra)
+                        {
+                            return (int)CosaFare.Su;
+                        }
+                        else if (nNeriBasso >= nNeriAlto && nNeriBasso >= nNeriDestra)
+                        {
+                            return (int)CosaFare.Giu;
+                        }
+                        else
+                        {
+                            return (int)CosaFare.Destra;
+                        }
+                    } else if(alto == true && basso == false && sinistra == true && destra == true)
+                    {
+                        if (nNeriAlto >= nNeriSinistra && nNeriAlto >= nNeriDestra)
+                        {
+                            return (int)CosaFare.Su;
+                        }
+                        else if (nNeriSinistra >= nNeriAlto && nNeriSinistra >= nNeriDestra)
+                        {
+                            return (int)CosaFare.Sinsita;   //24/12/2020: mi son accorto ora che l'ho scritto male ahahahhaha
+                        }
+                        else
+                        {
+                            return (int)CosaFare.Destra;
+                        }
+                    } else
+                    {
+                        if(nNeriBasso >= nNeriSinistra && nNeriBasso >= nNeriDestra)
+                        {
+                            return (int)CosaFare.Giu;
+                        } else if(nNeriSinistra >= nNeriBasso && nNeriSinistra >= nNeriDestra)
+                        {
+                            return (int)CosaFare.Sinsita;
+                        } else
+                        {
+                            return (int)CosaFare.Destra;
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>

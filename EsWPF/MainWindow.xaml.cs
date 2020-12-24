@@ -52,6 +52,10 @@ namespace EsWPF
         public MainWindow()
         {
             InitializeComponent();
+
+            t2 = new Thread(new ThreadStart(posG2));
+            t1 = new Thread(new ThreadStart(posG1));
+            finishController = new Thread(new ThreadStart(FinishController));
         }
 
         Thread t1;
@@ -245,17 +249,18 @@ namespace EsWPF
                         ///
 
                         currentVPS++;
-                        prevDateTime = now;
                     }
+
+                    prevDateTime = now;
                 }
             }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            t1 = new Thread(new ThreadStart(posG1)); t1.Start();
-            t2 = new Thread(new ThreadStart(posG2)); t2.Start();
-            finishController = new Thread(new ThreadStart(FinishController)); finishController.Start();
+            t1.Start();
+            t2.Start();
+            finishController.Start();
         }
 
         private Bitmap Screenshot(System.Windows.Controls.Image img)
