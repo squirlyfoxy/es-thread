@@ -8,17 +8,20 @@ using System.Threading;
 namespace EsWPF
 {
     //TODO: MUOVI IN UN ALTRO FILE
+
+    //TODO: CAMBIARE DA BIANCHI A DIVERSI DA NERI
+
     public class AreaBitmap
     {
         public Pixel[,] px { get; set; }
         public int Neri { get; set; }
-        public int Bianchi { get; set; }
+        public int DiversiDaNero { get; set; }
 
-        public AreaBitmap(Pixel[,] px, int nNeri, int nBianchi)
+        public AreaBitmap(Pixel[,] px, int nNeri, int nDiversiNero)
         {
             this.px = px;
             Neri = nNeri;
-            Bianchi = nBianchi;
+            DiversiDaNero = nDiversiNero;
         }
 
         public AreaBitmap() { }
@@ -35,9 +38,9 @@ namespace EsWPF
                 throw new Exception("Lunghezza non valida");
 
             int nNeri = (area[0].Neri) + (area[1].Neri);
-            int nBianchi = (area[0].Bianchi) + (area[1].Bianchi);
+            int nDiversiNero = (area[0].DiversiDaNero) + (area[1].DiversiDaNero);
 
-            return new int[] { nBianchi, nNeri };
+            return new int[] { nDiversiNero, nNeri };
         }
     }
 
@@ -86,7 +89,7 @@ namespace EsWPF
 
                 pixelLAlto = new MediaObjectCalculator().CalcolaQPixel(area);
 
-                if (pixelLAlto[0] > pixelLAlto[1]) //Numero dei bianchi maggiore del numero dei neri
+                if (pixelLAlto[0] > pixelLAlto[1]) //Numero dei diversi da nero maggiore del numero dei neri
                     alto = false;
                 else //Numero neri maggiore dei bianchi
                     alto = true;
@@ -99,7 +102,7 @@ namespace EsWPF
 
                 pixelLBasso = new MediaObjectCalculator().CalcolaQPixel(area);
 
-                if (pixelLBasso[0] > pixelLBasso[1]) //Numero dei bianchi maggiore del numero dei neri
+                if (pixelLBasso[0] > pixelLBasso[1]) //Numero dei diversi da nero maggiore del numero dei neri
                     basso = false;
                 else //Numero neri maggiore dei bianchi
                     basso = true;
@@ -112,7 +115,7 @@ namespace EsWPF
 
                 pixelLSinistra = new MediaObjectCalculator().CalcolaQPixel(area);
 
-                if (pixelLSinistra[0] > pixelLSinistra[1]) //Numero dei bianchi maggiore del numero dei neri
+                if (pixelLSinistra[0] > pixelLSinistra[1]) //Numero dei diversi da nero maggiore del numero dei neri
                     sinistra = false;
                 else //Numero neri maggiore dei bianchi
                     sinistra = true;
@@ -125,7 +128,7 @@ namespace EsWPF
 
                 pixelLDestra = new MediaObjectCalculator().CalcolaQPixel(area);
 
-                if (pixelLDestra[0] > pixelLDestra[1]) //Numero dei bianchi maggiore del numero dei neri
+                if (pixelLDestra[0] > pixelLDestra[1]) //Numero dei diversi da nero maggiore del numero dei neri
                     destra = false;
                 else //Numero neri maggiore dei bianchi
                     destra = true;
@@ -196,22 +199,9 @@ namespace EsWPF
                     } else if(nNeriDestra >= nNeriAlto && nNeriDestra >= nNeriBasso && nNeriDestra >= nNeriSinistra)
                     {
                         return (int)CosaFare.Destra;
-                    } else
-                    {
-                        //NON DOVREBBE MAI CADERE QUI, MA PER ESSERE SICURI...
-                        goto ProcessaNoTuttiVeriMaNonTuttiFalsi;
                     }
                 }
-                else
-                {
-                    //BLOCCO ISTRUZIONI SOLO 2 O 3 VERI
-                    goto ProcessaNoTuttiVeriMaNonTuttiFalsi;
-                }
 
-                //VISTO L'ELSE E AL GOTO NON DOVREI MAI ARRIVARE A QUESTA RIGA DI CODICE
-
-                //Codice richiamato 2 volte, quindi ho preferito fare un'etichetta (anche se non è la cosa migliore da fare in dal punto di vista della bellezza del codice)
-                ProcessaNoTuttiVeriMaNonTuttiFalsi:
                 //BLOCCO DI ISTRUZIONI PIù DISPENDIOSO DI TEMPO IN ASSOLUTO
                 if(alto == true && basso == true && sinistra == false && destra == false)   //2 VARIABILI A TRUE
                 {
@@ -389,11 +379,11 @@ namespace EsWPF
                             Color c = pxToAdd[x1, y1].Color;
                             //System.Diagnostics.Debug.WriteLine(c);
 
-                            if (c.R == Color.White.R && c.G == Color.White.G && c.B == Color.White.B)
-                                b++;
-                            
                             if (c.R == Color.Black.R && c.G == Color.Black.G && c.B == Color.Black.B)
                                 n++;
+                            else
+                                if(c.R != 120 && c.G != 120 && c.B != 120) //Escludi il grigio che è il colore della linea di partenza
+                                    b++;
                         }
                     }
 
