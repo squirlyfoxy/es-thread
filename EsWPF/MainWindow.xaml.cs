@@ -36,6 +36,7 @@ namespace EsWPF
     public partial class MainWindow : Window
     {
         //PROBLEMA: LE APPLICAZIONI WPF, DOPO UN'ATTENTA RICERCA, HO SCOPERTO CHE VENGONO BLOCCATE DALLA CLASSE THREAD PERCHè IL THREAD DELLE WINDOW è DI TIPO STAThread, CHE NON PERMETTE L'ESECUZIONE DI PIù THREAD IN PARALLELO DETTA STRETTA E QUINDI NON POSSO ESEGUIRE TUTTI E 4 I THREAD E ASPETTARMI CHE QUESTI INTERAGISCANO FACENDO MUOVERE FISICAMENTE L'IMMAGINE SULLO SCHERMO (DAL PUNT ODI VISTA DEL CODICE LE COORDINATE CAMBIANO MA ALLA VISTA L'IMMAGINE RIMANE FISSA DOV'è) 
+        //CODICE NON PIù USATO
         /*
         Thread t1;
         Thread t2;
@@ -75,6 +76,7 @@ namespace EsWPF
         }
 
         //EVENTI DEI BACKGROUND WORKER
+        //CODICE NON PIù USATO
         /*
                 private void finishControllerWork(object sender, DoWorkEventArgs e)
                 {
@@ -177,7 +179,7 @@ namespace EsWPF
         }
 
         bool st = false;
-        Thickness scooterBackUp;
+        Thickness motoBackUp;
         Thickness mouseImageFollowBackUp;
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -186,7 +188,7 @@ namespace EsWPF
             {
                 btnG.Content = "Ferma";
 
-                scooterBackUp = G1.Margin;
+                motoBackUp = G1.Margin;
                 mouseImageFollowBackUp = imgMouse.Margin;
                 imgMouse.Visibility = Visibility.Visible;
 
@@ -196,7 +198,7 @@ namespace EsWPF
             {
                 btnG.Content = "Inizia";
 
-                G1.Margin = scooterBackUp;
+                G1.Margin = motoBackUp;
                 imgMouse.Margin = mouseImageFollowBackUp;
                 imgMouse.Visibility = Visibility.Hidden;
 
