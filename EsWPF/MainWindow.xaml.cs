@@ -65,6 +65,8 @@ namespace EsWPF
                         t2 = new BackgroundWorker(); t2.DoWork += t2Work;
                         t1 = new BackgroundWorker(); t1.DoWork += t1Work;
                         finishController = new BackgroundWorker(); finishController.DoWork += finishControllerWork;*/
+
+            imgMouse.Visibility = Visibility.Hidden;
         }
 
         private void timer1Event(object sender, System.Timers.ElapsedEventArgs e)
@@ -175,7 +177,8 @@ namespace EsWPF
         }
 
         bool st = false;
-        Thickness backUp;
+        Thickness scooterBackUp;
+        Thickness mouseImageFollowBackUp;
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -183,7 +186,9 @@ namespace EsWPF
             {
                 btnG.Content = "Ferma";
 
-                backUp = G1.Margin;
+                scooterBackUp = G1.Margin;
+                mouseImageFollowBackUp = imgMouse.Margin;
+                imgMouse.Visibility = Visibility.Visible;
 
                 timer1.Start();
                 st = true;
@@ -191,7 +196,9 @@ namespace EsWPF
             {
                 btnG.Content = "Inizia";
 
-                G1.Margin = backUp;
+                G1.Margin = scooterBackUp;
+                imgMouse.Margin = mouseImageFollowBackUp;
+                imgMouse.Visibility = Visibility.Hidden;
 
                 timer1.Stop();
                 st = false;
@@ -216,5 +223,26 @@ namespace EsWPF
 
         private void Window_ContentRendered(object sender, EventArgs e)
         { }
+
+        /// <summary>
+        /// Evento richiamato quando il mouse viene mosso
+        /// </summary>
+        private void Window_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            //Codice che muove l'immagine 'imgMouse' alle coordinate del mouse, in questo modo possiamo controllare gli scooter
+            System.Windows.Point mPosition = e.GetPosition(this);
+
+            //Coordinate
+            double mX = mPosition.X;
+            double mY = mPosition.Y;
+
+            //Posizione
+            Thickness newPos = imgMouse.Margin;
+
+            newPos.Left = mX;
+            newPos.Top = mY;
+
+            imgMouse.Margin = newPos;
+        }
     }
 }

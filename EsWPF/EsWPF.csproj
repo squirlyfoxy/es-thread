@@ -112,5 +112,11 @@
   <ItemGroup>
     <Resource Include="pl.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\mouse-handler.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="mouse-handler.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

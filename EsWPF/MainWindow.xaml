@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EsWPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" ContentRendered="Window_ContentRendered">
+        Title="MainWindow" Height="450" Width="800" ContentRendered="Window_ContentRendered" ResizeMode="NoResize" MouseMove="Window_MouseMove">
     <Grid>
         <Image x:Name="imgBackground" HorizontalAlignment="Left" Height="504" VerticalAlignment="Top" Width="792" Source="background.png" Stretch="Fill" Margin="0,0,0,-85"/>
 
@@ -13,5 +13,6 @@
         <Image x:Name="G1"  Margin="679,111,62,247" Source="pl.png" />
 
         <Button x:Name="btnG" Content="Inizia" HorizontalAlignment="Left" Margin="10,386,0,0" VerticalAlignment="Top" Width="121" Height="23" Click="Button_Click"/>
+        <Image x:Name="imgMouse" HorizontalAlignment="Left" Height="60" Margin="679,202,0,0" VerticalAlignment="Top" Width="66" Source="mouse-handler.png" Stretch="Fill"/>
     </Grid>
 </Window>

@@ -207,7 +207,7 @@ namespace EsWPF
 
                 //VISTO L'ELSE E AL GOTO NON DOVREI MAI ARRIVARE A QUESTA RIGA DI CODICE
 
-                //Codice richiamato 2 volte, quindi ho preferito fare un'etichetta (anche se non è la cosa miglòiore da fare in dal punto di vista della bellezza del codice)
+                //Codice richiamato 2 volte, quindi ho preferito fare un'etichetta (anche se non è la cosa migliore da fare in dal punto di vista della bellezza del codice)
                 ProcessaNoTuttiVeriMaNonTuttiFalsi:
                 //BLOCCO DI ISTRUZIONI PIù DISPENDIOSO DI TEMPO IN ASSOLUTO
                 if(alto == true && basso == true && sinistra == false && destra == false)   //2 VARIABILI A TRUE
