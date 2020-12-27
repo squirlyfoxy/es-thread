@@ -145,6 +145,9 @@ namespace EsWPF
             /// Se sta solo una variabile a vero mi muovo verso quel lato
             /// Se sono tutti veri mi muovo o seguendo il lato con numero maggiore di pixel neri
             /// Se sono veri in 2 o 3 mi muovo verso il lato con numero maggiore di pixel neri
+            /// 
+            /// Ragionamento v.2
+            /// Maggiore è il numero di pixel diversi dal nero, più la velocità della moto aumenta in modo da dare un effetto "inseguito" e "scappo"
             ///
 
             //TODO: OTTIMIZZARE I TEMPI DEL BLOCCO DI ISTRUZIONI SOTTOSTANTE

@@ -99,11 +99,6 @@ namespace EsWPF
         /// </summary>
         public float VelocitaG1 { get; set; } = 5.3f;
 
-        /// <summary>
-        /// VELOCITà MOVIMENTO SECONDO SCOOTER
-        /// </summary>
-        public float VelocitaG2 { get; set; } = 4.3f;
-
         //VPF = Volte Per Secondo
 
         /// <summary>
