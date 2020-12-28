@@ -46,7 +46,7 @@ namespace EsWPF
 
     public enum CosaFare
     {
-        Sinsita, Destra, Su, Giu
+        Sinistra, Destra, Su, Giu
     }
 
     public class AI
@@ -170,7 +170,7 @@ namespace EsWPF
             }
             else if (alto == false && basso == false && sinistra == true && destra == false)
             {
-                return (int)CosaFare.Sinsita;
+                return (int)CosaFare.Sinistra;
             }
             else if (alto == false && basso == false && sinistra == false && destra == true)
             {
@@ -195,7 +195,7 @@ namespace EsWPF
                         return (int)CosaFare.Giu;
                     } else if(nNeriSinistra >= nNeriAlto && nNeriSinistra >= nNeriBasso && nNeriSinistra >= nNeriDestra)
                     {
-                        return (int)CosaFare.Sinsita;
+                        return (int)CosaFare.Sinistra;
                     } else if(nNeriDestra >= nNeriAlto && nNeriDestra >= nNeriBasso && nNeriDestra >= nNeriSinistra)
                     {
                         return (int)CosaFare.Destra;
@@ -222,7 +222,7 @@ namespace EsWPF
                     }
                     else
                     {
-                        return (int)CosaFare.Sinsita;
+                        return (int)CosaFare.Sinistra;
                     }
                 }
                 else if (alto == true && basso == false && sinistra == false && destra == true)
@@ -244,7 +244,7 @@ namespace EsWPF
                     }
                     else
                     {
-                        return (int)CosaFare.Sinsita;
+                        return (int)CosaFare.Sinistra;
                     }
                 }
                 else if (alto == false && basso == true && sinistra == false && destra == true)
@@ -261,7 +261,7 @@ namespace EsWPF
                 {
                     if (nNeriSinistra >= nNeriDestra)
                     {
-                        return (int)CosaFare.Sinsita;
+                        return (int)CosaFare.Sinistra;
                     }
                     else
                     {
@@ -281,7 +281,7 @@ namespace EsWPF
                             return (int)CosaFare.Giu;
                         } else
                         {
-                            return (int)CosaFare.Sinsita;
+                            return (int)CosaFare.Sinistra;
                         }
                     } else if(alto == true && basso == true && sinistra == false && destra == true)
                     {
@@ -305,7 +305,7 @@ namespace EsWPF
                         }
                         else if (nNeriSinistra >= nNeriAlto && nNeriSinistra >= nNeriDestra)
                         {
-                            return (int)CosaFare.Sinsita;   //24/12/2020: mi son accorto ora che l'ho scritto male ahahahhaha
+                            return (int)CosaFare.Sinistra;
                         }
                         else
                         {
@@ -318,7 +318,7 @@ namespace EsWPF
                             return (int)CosaFare.Giu;
                         } else if(nNeriSinistra >= nNeriBasso && nNeriSinistra >= nNeriDestra)
                         {
-                            return (int)CosaFare.Sinsita;
+                            return (int)CosaFare.Sinistra;
                         } else
                         {
                             return (int)CosaFare.Destra;

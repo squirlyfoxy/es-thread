@@ -111,7 +111,7 @@ namespace EsWPF
         /// <summary>
         /// Raggio screenshot AI
         /// </summary>
-        private int ray = 100;
+        private int ray = 150;
 
         private void posG1()
         {
@@ -154,7 +154,7 @@ namespace EsWPF
                         mG1.Right -= VelocitaG1;
                         mG1.Left += VelocitaG1;
                         break;
-                    case (int)CosaFare.Sinsita:
+                    case (int)CosaFare.Sinistra:
                         mG1.Left -= VelocitaG1;
                         mG1.Right += VelocitaG1;
                         break;
