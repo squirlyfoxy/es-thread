@@ -56,9 +56,12 @@ namespace EsWPF
         /// <summary>
         /// Codice AI gen1
         /// </summary>
-        public int Process(Pixel[,] dim)
+        public float[] Process(Pixel[,] dim, MainWindow mw)
         {
             List<AreaBitmap> Area = GetPixelArea(dim);
+
+            float[] toReturn = new float[2];
+            float velBase = mw.VelocitaG1;
 
             //CALCOLA IL NUMERO DEI PIXEL BIANCHI E NERI, FAI LA MEDIA PER LATO E DECIDI DOVE ANDARE
             
@@ -70,6 +73,9 @@ namespace EsWPF
             int[] pixelLBasso = new int[2];
             int[] pixelLSinistra = new int[2];
             int[] pixelLDestra = new int[2];
+
+            int nDiversiNeroTot;
+            int pixelTotali = dim.GetLength(0) * dim.GetLength(1);
 
             //VARIABILI CHE RAPPRESENTANO I CONSIGLI DEI MOVIMENTI PRODOTTI DAI THREAD SOTTOSTANTI
             bool alto = false;
@@ -141,6 +147,7 @@ namespace EsWPF
             System.Diagnostics.Debug.WriteLine("Destra: " + destra + " Sinistra: " + sinistra + " Su: " + alto + " Basso: " + basso);
 
             //RAGIONARE SU COME MUOVERE L'IMMAGINE SE TUTTO è VERO
+            nDiversiNeroTot = pixelLAlto[0] + pixelLBasso[0] + pixelLDestra[0] + pixelLSinistra[0];
 
             ///
             /// Ragionamento v.1
@@ -153,6 +160,10 @@ namespace EsWPF
             /// Maggiore è il numero di pixel diversi dal nero, più la velocità della moto aumenta in modo da dare un effetto "inseguito" e "scappo"
             ///
 
+            velBase =  (nDiversiNeroTot * (velBase) / pixelTotali);
+            System.Diagnostics.Debug.WriteLine(velBase);
+            toReturn[1] = velBase;
+
             //TODO: OTTIMIZZARE I TEMPI DEL BLOCCO DI ISTRUZIONI SOTTOSTANTE
 
             //SERVIRANNO MOLTI IF, NON LA COSA MIGLIORE CHE SI POTREBBE FARE MA PER INIZIARE...
@@ -160,21 +171,21 @@ namespace EsWPF
             //E' LA COSA PIù FATTA MALE CHE POTEVO FARE
 
             //BLOCCO ISTRUZIONI SOLO 1 VARIABILE VERA
-            if(alto == true && basso == false && sinistra == false && destra == false)
+            if (alto == true && basso == false && sinistra == false && destra == false)
             {
-                return (int)CosaFare.Su;
+                toReturn[0] = (int)CosaFare.Su;
             }
             else if (alto == false && basso == true && sinistra == false && destra == false)
             {
-                return (int)CosaFare.Giu;
+                toReturn[0] = (int)CosaFare.Giu;
             }
             else if (alto == false && basso == false && sinistra == true && destra == false)
             {
-                return (int)CosaFare.Sinistra;
+                toReturn[0] = (int)CosaFare.Sinistra;
             }
             else if (alto == false && basso == false && sinistra == false && destra == true)
             {
-                return (int)CosaFare.Destra;
+                toReturn[0] = (int)CosaFare.Destra;
             }
             else
             {
@@ -189,16 +200,16 @@ namespace EsWPF
                     //COSA PEGGIORE CHE SI POTEVA INVENTARE
                     if(nNeriAlto >= nNeriBasso && nNeriAlto >= nNeriSinistra && nNeriAlto >= nNeriDestra)
                     {
-                        return (int)CosaFare.Su;
+                        toReturn[0] = (int)CosaFare.Su;
                     } else if(nNeriBasso >= nNeriAlto && nNeriBasso >= nNeriSinistra && nNeriBasso >= nNeriDestra)
                     {
-                        return (int)CosaFare.Giu;
+                        toReturn[0] = (int)CosaFare.Giu;
                     } else if(nNeriSinistra >= nNeriAlto && nNeriSinistra >= nNeriBasso && nNeriSinistra >= nNeriDestra)
                     {
-                        return (int)CosaFare.Sinistra;
+                        toReturn[0] = (int)CosaFare.Sinistra;
                     } else if(nNeriDestra >= nNeriAlto && nNeriDestra >= nNeriBasso && nNeriDestra >= nNeriSinistra)
                     {
-                        return (int)CosaFare.Destra;
+                        toReturn[0] = (int)CosaFare.Destra;
                     }
                 }
 
@@ -207,65 +218,65 @@ namespace EsWPF
                 {
                     if(nNeriAlto >= nNeriBasso)
                     {
-                        return (int)CosaFare.Su;
+                        toReturn[0] = (int)CosaFare.Su;
                     }
                     else
                     {
-                        return (int)CosaFare.Giu;
+                        toReturn[0] = (int)CosaFare.Giu;
                     }
                 }
                 else if (alto == true && basso == false && sinistra == true && destra == false)
                 {
                     if (nNeriAlto >= nNeriSinistra)
                     {
-                        return (int)CosaFare.Su;
+                        toReturn[0] = (int)CosaFare.Su;
                     }
                     else
                     {
-                        return (int)CosaFare.Sinistra;
+                        toReturn[0] = (int)CosaFare.Sinistra;
                     }
                 }
                 else if (alto == true && basso == false && sinistra == false && destra == true)
                 {
                     if (nNeriAlto >= nNeriDestra)
                     {
-                        return (int)CosaFare.Su;
+                        toReturn[0] = (int)CosaFare.Su;
                     }
                     else
                     {
-                        return (int)CosaFare.Destra;
+                        toReturn[0] = (int)CosaFare.Destra;
                     }
                 }
                 else if (alto == false && basso == true && sinistra == true && destra == false)
                 {
                     if (nNeriBasso >= nNeriSinistra)
                     {
-                        return (int)CosaFare.Giu;
+                        toReturn[0] = (int)CosaFare.Giu;
                     }
                     else
                     {
-                        return (int)CosaFare.Sinistra;
+                        toReturn[0] = (int)CosaFare.Sinistra;
                     }
                 }
                 else if (alto == false && basso == true && sinistra == false && destra == true)
                 {
                     if (nNeriBasso >= nNeriDestra)
                     {
-                        return (int)CosaFare.Giu;
+                        toReturn[0] = (int)CosaFare.Giu;
                     }
                     else
                     {
-                        return (int)CosaFare.Destra;
+                        toReturn[0] = (int)CosaFare.Destra;
                     }
                 } else if(alto == false && basso == false && sinistra == true && destra == true)
                 {
                     if (nNeriSinistra >= nNeriDestra)
                     {
-                        return (int)CosaFare.Sinistra;
+                        toReturn[0] = (int)CosaFare.Sinistra;
                     }
                     else
                     {
-                        return (int)CosaFare.Destra;
+                        toReturn[0] = (int)CosaFare.Destra;
                     }
                 }
                 else
@@ -275,57 +286,59 @@ namespace EsWPF
                     {
                         if(nNeriAlto >= nNeriBasso && nNeriAlto >= nNeriSinistra)
                         {
-                            return (int)CosaFare.Su;
+                            toReturn[0] = (int)CosaFare.Su;
                         } else if(nNeriBasso >= nNeriAlto && nNeriBasso >= nNeriSinistra)
                         {
-                            return (int)CosaFare.Giu;
+                            toReturn[0] = (int)CosaFare.Giu;
                         } else
                         {
-                            return (int)CosaFare.Sinistra;
+                            toReturn[0] = (int)CosaFare.Sinistra;
                         }
                     } else if(alto == true && basso == true && sinistra == false && destra == true)
                     {
                         if (nNeriAlto >= nNeriBasso && nNeriAlto >= nNeriDestra)
                         {
-                            return (int)CosaFare.Su;
+                            toReturn[0] = (int)CosaFare.Su;
                         }
                         else if (nNeriBasso >= nNeriAlto && nNeriBasso >= nNeriDestra)
                         {
-                            return (int)CosaFare.Giu;
+                            toReturn[0] = (int)CosaFare.Giu;
                         }
                         else
                         {
-                            return (int)CosaFare.Destra;
+                            toReturn[0] = (int)CosaFare.Destra;
                         }
                     } else if(alto == true && basso == false && sinistra == true && destra == true)
                     {
                         if (nNeriAlto >= nNeriSinistra && nNeriAlto >= nNeriDestra)
                         {
-                            return (int)CosaFare.Su;
+                            toReturn[0] = (int)CosaFare.Su;
                         }
                         else if (nNeriSinistra >= nNeriAlto && nNeriSinistra >= nNeriDestra)
                         {
-                            return (int)CosaFare.Sinistra;
+                            toReturn[0] = (int)CosaFare.Sinistra;
                         }
                         else
                         {
-                            return (int)CosaFare.Destra;
+                            toReturn[0] = (int)CosaFare.Destra;
                         }
                     } else
                     {
                         if(nNeriBasso >= nNeriSinistra && nNeriBasso >= nNeriDestra)
                         {
-                            return (int)CosaFare.Giu;
+                            toReturn[0] = (int)CosaFare.Giu;
                         } else if(nNeriSinistra >= nNeriBasso && nNeriSinistra >= nNeriDestra)
                         {
-                            return (int)CosaFare.Sinistra;
+                            toReturn[0] = (int)CosaFare.Sinistra;
                         } else
                         {
-                            return (int)CosaFare.Destra;
+                            toReturn[0] = (int)CosaFare.Destra;
                         }
                     }
                 }
             }
+
+            return toReturn;
         }
 
         /// <summary>

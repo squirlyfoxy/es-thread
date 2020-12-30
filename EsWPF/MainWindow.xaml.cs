@@ -145,26 +145,28 @@ namespace EsWPF
                 /// Se lo screenshot è tutto nero continuo con il movimento precedente
                 ///
 
-                int cosaFare = new AI().Process(dim);
+                float[] cosaFare = new AI().Process(dim, this);
                 Thickness mG1 = G1.Margin;
 
-                switch (cosaFare)
+                float v = cosaFare[1];
+
+                switch (cosaFare[0])
                 {
                     case (int)CosaFare.Destra:
-                        mG1.Right -= VelocitaG1;
-                        mG1.Left += VelocitaG1;
+                        mG1.Right -= v;
+                        mG1.Left += v;
                         break;
                     case (int)CosaFare.Sinistra:
-                        mG1.Left -= VelocitaG1;
-                        mG1.Right += VelocitaG1;
+                        mG1.Left -= v;
+                        mG1.Right += v;
                         break;
                     case (int)CosaFare.Su:
-                        mG1.Top -= VelocitaG1;
-                        mG1.Bottom += VelocitaG1;
+                        mG1.Top -= v;
+                        mG1.Bottom += v;
                         break;
                     case (int)CosaFare.Giu:
-                        mG1.Bottom -= VelocitaG1;
-                        mG1.Top += VelocitaG1;
+                        mG1.Bottom -= v;
+                        mG1.Top += v;
                         break;
                 }
 
