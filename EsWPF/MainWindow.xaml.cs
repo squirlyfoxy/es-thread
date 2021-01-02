@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows;
+using System.Threading;
 
 namespace EsWPF
 {
@@ -54,13 +55,12 @@ namespace EsWPF
 
         //IL BACKGROUND WORKER NON FUNZIONA (FORSE NON HO CAPITO COPME FARLO FUNZIONARE IO)
 
-        //PER RISOLVERE SI POTREBBERO USARE I  TIMER INSIEME...
+        //PER RISOLVERE SI POTREBBERO USARE I TIMER
         System.Timers.Timer timer1;
 
         public MainWindow()
         {
             InitializeComponent();
-
             timer1 = new System.Timers.Timer(1000.0 / VPS * 10); timer1.Elapsed += timer1Event;
             /*
                         t2 = new BackgroundWorker(); t2.DoWork += t2Work;
@@ -70,9 +70,11 @@ namespace EsWPF
             imgMouse.Visibility = Visibility.Hidden;
         }
 
+        //Evento richiamato ogni volta che passa 1000.0 / VPS * 10 ms
         private void timer1Event(object sender, System.Timers.ElapsedEventArgs e)
         {
-            posG1();
+            PosG1();
+            CollisionDetection();
         }
 
         //EVENTI DEI BACKGROUND WORKER
@@ -111,9 +113,56 @@ namespace EsWPF
         /// <summary>
         /// Raggio screenshot AI
         /// </summary>
-        private int ray = 150;
+        private int ray = 100;
 
-        private void posG1()
+        private void CollisionDetection()
+        {
+            this.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                bool CheckCollision(System.Windows.Controls.Image img, System.Windows.Shapes.Rectangle rtc)
+                {
+                    bool toReturn = false;
+
+                    if (((img.Margin.Left > rtc.Margin.Left) &&
+                        (img.Margin.Top > rtc.Margin.Top) && img.Margin.Top < 190))
+                            toReturn = true;
+
+                    return toReturn;
+                }
+
+                if (CheckCollision(G1, rtcCollisionDetection))
+                {
+                    //Ha vinto g1
+                    timer1.Stop();
+
+                    MessageBox.Show("Ha vinto g1");
+
+                    btnG.Content = "Inizia";
+
+                    G1.Margin = motoBackUp;
+                    imgMouse.Margin = mouseImageFollowBackUp;
+                    imgMouse.Visibility = Visibility.Hidden;
+
+                    st = false;
+                } else if (CheckCollision(imgMouse, rtcCollisionDetection))
+                {
+                    //Ha vinto il mouse
+                    timer1.Stop();
+
+                    MessageBox.Show("Ha vinto il mouse");
+
+                    btnG.Content = "Inizia";
+
+                    G1.Margin = motoBackUp;
+                    imgMouse.Margin = mouseImageFollowBackUp;
+                    imgMouse.Visibility = Visibility.Hidden;
+
+                    st = false;
+                }
+            }));
+        }
+
+        private void PosG1()
         {
             //Frame
             this.Dispatcher.BeginInvoke(new Action(() =>
@@ -190,6 +239,7 @@ namespace EsWPF
                 imgMouse.Visibility = Visibility.Visible;
 
                 timer1.Start();
+
                 st = true;
             } else
             {
@@ -200,6 +250,7 @@ namespace EsWPF
                 imgMouse.Visibility = Visibility.Hidden;
 
                 timer1.Stop();
+
                 st = false;
             }
         }
