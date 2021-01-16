@@ -57,16 +57,20 @@ namespace EsWPF
 
         //PER RISOLVERE SI POTREBBERO USARE I TIMER
         System.Timers.Timer timer1;
+        System.Timers.Timer timer2;
+
+        //PROBLEMA: METTENDO UN SECONDO TIMER SUCCEDE COME COI THREAD: NON SI MUOVE NULLA
 
         public MainWindow()
         {
             InitializeComponent();
             timer1 = new System.Timers.Timer(1000.0 / VPS * 10); timer1.Elapsed += timer1Event;
+            timer2 = new System.Timers.Timer(1000.0 / VPS * 10); timer2.Elapsed += timer2Event;
             /*
                         t2 = new BackgroundWorker(); t2.DoWork += t2Work;
                         t1 = new BackgroundWorker(); t1.DoWork += t1Work;
                         finishController = new BackgroundWorker(); finishController.DoWork += finishControllerWork;*/
-
+            
             imgMouse.Visibility = Visibility.Hidden;
         }
 
@@ -74,6 +78,13 @@ namespace EsWPF
         private void timer1Event(object sender, System.Timers.ElapsedEventArgs e)
         {
             PosG1();
+            CollisionDetection();
+        }
+
+        //Evento richiamato ogni volta che passa 1000.0 / VPS * 10 ms
+        private void timer2Event(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            PosG2();
             CollisionDetection();
         }
 
@@ -119,6 +130,8 @@ namespace EsWPF
         {
             this.Dispatcher.BeginInvoke(new Action(() =>
             {
+                DateTime now = DateTime.Now;
+
                 bool CheckCollision(System.Windows.Controls.Image img, System.Windows.Shapes.Rectangle rtc)
                 {
                     bool toReturn = false;
@@ -130,40 +143,121 @@ namespace EsWPF
                     return toReturn;
                 }
 
-                if (CheckCollision(G1, rtcCollisionDetection))
+                void ProcessReset()
                 {
-                    //Ha vinto g1
-                    timer1.Stop();
-
-                    MessageBox.Show("Ha vinto g1");
-
                     btnG.Content = "Inizia";
 
-                    G1.Margin = motoBackUp;
-                    imgMouse.Margin = mouseImageFollowBackUp;
-                    imgMouse.Visibility = Visibility.Hidden;
-
-                    st = false;
-                } else if (CheckCollision(imgMouse, rtcCollisionDetection))
-                {
-                    //Ha vinto il mouse
-                    timer1.Stop();
-
-                    MessageBox.Show("Ha vinto il mouse");
-
-                    btnG.Content = "Inizia";
-
-                    G1.Margin = motoBackUp;
+                    G1.Margin = marquezBackUp;
+                    G2.Margin = doviziosoBackUp;
                     imgMouse.Margin = mouseImageFollowBackUp;
                     imgMouse.Visibility = Visibility.Hidden;
 
                     st = false;
                 }
+
+
+                if (CheckCollision(G1, rtcCollisionDetection))
+                {
+                    //Ha vinto g1
+                    timer1.Stop();
+                    timer2.Stop();
+
+                    MessageBox.Show("Ha vinto Marquez in: " + (now - startNow));
+
+                    ProcessReset();
+                }
+                else if (CheckCollision(G2, rtcCollisionDetection))
+                {
+                    //Ha vinto dovizioso
+                    timer1.Stop();
+                    timer2.Stop();
+
+                    MessageBox.Show("Ha vinto Dovizioso in: " + (now - startNow));
+
+                    ProcessReset();
+                }
+                else if (CheckCollision(imgMouse, rtcCollisionDetection))
+                {
+                    //Ha vinto il mouse
+                    timer1.Stop();
+                    timer2.Stop();
+
+                    MessageBox.Show("Ha vinto il mouse in: " + (now - startNow));
+
+                    ProcessReset();
+                } else { /* SE ENTRO QUI NESSUNO HA ANCORA VINTO */}
+            }));
+        }
+
+        private void PosG2()
+        {
+            Thread.Sleep(1);
+
+            //Frame
+            this.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                Bitmap s = Screenshot(G2);
+
+                Pixel[,] dim = new Pixel[s.Width, s.Height];
+
+                //Populate px
+                for (int x = 0; x < s.Width; x++)
+                {
+                    for (int y = 0; y < s.Height; y++)
+                    {
+                        dim[x, y] = new Pixel(s.GetPixel(x, y), x, y);
+                    }
+                }
+
+                //Per il debug
+                //s.Save("gg.png");
+
+                //AI SECTION
+
+                ///
+                /// Schema funzionamento (teorico):
+                /// Leggo tutta la matrice e individuo le aree che coincidono con il cambiamento di colore dei pixel (bianco == non andare, nero == continua ad andare)
+                /// farò in modo che l'immagine si muova verso la quantità maggiore possibile di pixel neri cambiano, se necessario, la direzione
+                /// Per fare ciò l'immagine verrà divisa in 4 e per ogni lato farò la media della quantità di pixel neri tra i due blocchi da 16px del lato
+                /// Il lato con maggiore quantità di px neri sarà il vincente
+                /// 
+                /// Se lo screenshot è tutto nero continuo con il movimento precedente
+                ///
+
+                float[] cosaFare = new AI().Process(dim, this);
+                Thickness mG2 = G2.Margin;
+
+                float v = cosaFare[1];
+
+                switch (cosaFare[0])
+                {
+                    case (int)CosaFare.Destra:
+                        mG2.Right -= v;
+                        mG2.Left += v;
+                        break;
+                    case (int)CosaFare.Sinistra:
+                        mG2.Left -= v;
+                        mG2.Right += v;
+                        break;
+                    case (int)CosaFare.Su:
+                        mG2.Top -= v;
+                        mG2.Bottom += v;
+                        break;
+                    case (int)CosaFare.Giu:
+                        mG2.Bottom -= v;
+                        mG2.Top += v;
+                        break;
+                }
+
+                G2.Margin = mG2;
+                Debug.WriteLine("Marglin G2: " + G1.Margin);
             }));
         }
 
         private void PosG1()
         {
+            Thread.Sleep(1);
+
             //Frame
             this.Dispatcher.BeginInvoke(new Action(() =>
             {
@@ -180,7 +274,8 @@ namespace EsWPF
                     }
                 }
 
-                s.Save("gg.png");
+                //Per il debug
+                //s.Save("gg.png");
 
                 //AI SECTION
 
@@ -220,13 +315,16 @@ namespace EsWPF
                 }
 
                 G1.Margin = mG1;
-                Debug.WriteLine(G1.Margin);
+                Debug.WriteLine("Marglin G1: " + G1.Margin);
             }));
         }
 
         bool st = false;
-        Thickness motoBackUp;
+        Thickness marquezBackUp;
+        Thickness doviziosoBackUp;
         Thickness mouseImageFollowBackUp;
+
+        DateTime startNow;
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -234,27 +332,38 @@ namespace EsWPF
             {
                 btnG.Content = "Ferma";
 
-                motoBackUp = G1.Margin;
+                startNow = DateTime.Now;
+
+                //Backup posizioni moto
+                marquezBackUp = G1.Margin;
+                doviziosoBackUp = G2.Margin;
+
                 mouseImageFollowBackUp = imgMouse.Margin;
                 imgMouse.Visibility = Visibility.Visible;
 
                 timer1.Start();
+                timer2.Start();
 
                 st = true;
             } else
             {
                 btnG.Content = "Inizia";
 
-                G1.Margin = motoBackUp;
+                //Backup posizioni moto
+                G1.Margin = marquezBackUp;
+                G2.Margin = doviziosoBackUp;
+
                 imgMouse.Margin = mouseImageFollowBackUp;
                 imgMouse.Visibility = Visibility.Hidden;
 
                 timer1.Stop();
+                timer2.Start();
 
                 st = false;
             }
         }
 
+        //CODICE PRESO DA INTERNET
         private Bitmap Screenshot(System.Windows.Controls.Image img)
         {
             Bitmap screenshot;

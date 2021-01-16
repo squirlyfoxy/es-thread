@@ -10,7 +10,8 @@
         <Image x:Name="imgBackground" HorizontalAlignment="Left" Height="504" VerticalAlignment="Top" Width="792" Source="background.png" Stretch="Fill" Margin="0,0,0,-85"/>
 
         <!-- IMMAGINI GIOCAOTORI-->
-        <Image x:Name="G1"  Margin="685,79,66,277" Source="inseguito-marquez.png" />
+        <Image x:Name="G1"  Margin="651,83,100,273" Source="inseguito-marquez.png" />
+        <Image x:Name="G2"  Margin="711,83,40,273" Source="dovizioso.png" />
 
         <Button x:Name="btnG" Content="Inizia" HorizontalAlignment="Left" Margin="10,386,0,0" VerticalAlignment="Top" Width="121" Height="23" Click="Button_Click"/>
         <Image x:Name="imgMouse" Margin="674,198,0,0" Source="mouse-valentino.png" HorizontalAlignment="Left" Width="74" Height="90" VerticalAlignment="Top"/>

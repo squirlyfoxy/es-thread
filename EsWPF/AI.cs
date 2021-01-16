@@ -9,8 +9,6 @@ namespace EsWPF
 {
     //TODO: MUOVI IN UN ALTRO FILE
 
-    //TODO: CAMBIARE DA BIANCHI A DIVERSI DA NERI
-
     public class AreaBitmap
     {
         public Pixel[,] px { get; set; }

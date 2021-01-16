@@ -124,5 +124,8 @@
   <ItemGroup>
     <Resource Include="inseguito-marquez.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="dovizioso.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
