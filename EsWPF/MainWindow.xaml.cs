@@ -59,6 +59,8 @@ namespace EsWPF
         System.Timers.Timer timer1;
         System.Timers.Timer timer2;
 
+        Thread collisionThread;
+
         //PROBLEMA: METTENDO UN SECONDO TIMER SUCCEDE COME COI THREAD: NON SI MUOVE NULLA
 
         public MainWindow()
@@ -66,11 +68,14 @@ namespace EsWPF
             InitializeComponent();
             timer1 = new System.Timers.Timer(1000.0 / VPS * 10); timer1.Elapsed += timer1Event;
             timer2 = new System.Timers.Timer(1000.0 / VPS * 10); timer2.Elapsed += timer2Event;
+
+            collisionThread = new Thread(new ThreadStart(CollisionDetection));
+
             /*
                         t2 = new BackgroundWorker(); t2.DoWork += t2Work;
                         t1 = new BackgroundWorker(); t1.DoWork += t1Work;
                         finishController = new BackgroundWorker(); finishController.DoWork += finishControllerWork;*/
-            
+
             imgMouse.Visibility = Visibility.Hidden;
         }
 
@@ -78,14 +83,14 @@ namespace EsWPF
         private void timer1Event(object sender, System.Timers.ElapsedEventArgs e)
         {
             PosG1();
-            CollisionDetection();
+            //CollisionDetection();
         }
 
         //Evento richiamato ogni volta che passa 1000.0 / VPS * 10 ms
         private void timer2Event(object sender, System.Timers.ElapsedEventArgs e)
         {
             PosG2();
-            CollisionDetection();
+            //CollisionDetection();
         }
 
         //EVENTI DEI BACKGROUND WORKER
@@ -128,70 +133,76 @@ namespace EsWPF
 
         private void CollisionDetection()
         {
-            this.Dispatcher.BeginInvoke(new Action(() =>
+            while (collisionThread.IsAlive)
             {
-                DateTime now = DateTime.Now;
+                Thread.Sleep(500);
 
-                bool CheckCollision(System.Windows.Controls.Image img, System.Windows.Shapes.Rectangle rtc)
+                this.Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    bool toReturn = false;
+                    DateTime now = DateTime.Now;
 
-                    if (((img.Margin.Left > rtc.Margin.Left) &&
-                        (img.Margin.Top > rtc.Margin.Top) && img.Margin.Top < 190))
+                    bool CheckCollision(System.Windows.Controls.Image img, System.Windows.Shapes.Rectangle rtc)
+                    {
+                        bool toReturn = false;
+
+                        if (((img.Margin.Left > rtc.Margin.Left) &&
+                            (img.Margin.Top > rtc.Margin.Top) && img.Margin.Top < 190))
                             toReturn = true;
 
-                    return toReturn;
-                }
+                        return toReturn;
+                    }
 
-                void ProcessReset()
-                {
-                    btnG.Content = "Inizia";
+                    void ProcessReset()
+                    {
+                        btnG.Content = "Inizia";
 
-                    G1.Margin = marquezBackUp;
-                    G2.Margin = doviziosoBackUp;
-                    imgMouse.Margin = mouseImageFollowBackUp;
-                    imgMouse.Visibility = Visibility.Hidden;
+                        G1.Margin = marquezBackUp;
+                        G2.Margin = doviziosoBackUp;
+                        imgMouse.Margin = mouseImageFollowBackUp;
+                        imgMouse.Visibility = Visibility.Hidden;
 
-                    st = false;
-                }
+                        st = false;
+                    }
 
 
-                if (CheckCollision(G1, rtcCollisionDetection))
-                {
-                    //Ha vinto g1
-                    timer1.Stop();
-                    timer2.Stop();
+                    if (CheckCollision(G1, rtcCollisionDetection))
+                    {
+                        //Ha vinto g1
+                        timer1.Stop();
+                        timer2.Stop();
 
-                    MessageBox.Show("Ha vinto Marquez in: " + (now - startNow));
+                        MessageBox.Show("Ha vinto Marquez in: " + (now - startNow));
 
-                    ProcessReset();
-                }
-                else if (CheckCollision(G2, rtcCollisionDetection))
-                {
-                    //Ha vinto dovizioso
-                    timer1.Stop();
-                    timer2.Stop();
+                        ProcessReset();
+                    }
+                    else if (CheckCollision(G2, rtcCollisionDetection))
+                    {
+                        //Ha vinto dovizioso
+                        timer1.Stop();
+                        timer2.Stop();
 
-                    MessageBox.Show("Ha vinto Dovizioso in: " + (now - startNow));
+                        MessageBox.Show("Ha vinto Dovizioso in: " + (now - startNow));
 
-                    ProcessReset();
-                }
-                else if (CheckCollision(imgMouse, rtcCollisionDetection))
-                {
-                    //Ha vinto il mouse
-                    timer1.Stop();
-                    timer2.Stop();
+                        ProcessReset();
+                    }
+                    else if (CheckCollision(imgMouse, rtcCollisionDetection))
+                    {
+                        //Ha vinto il mouse
+                        timer1.Stop();
+                        timer2.Stop();
 
-                    MessageBox.Show("Ha vinto il mouse in: " + (now - startNow));
+                        MessageBox.Show("Ha vinto il mouse in: " + (now - startNow));
 
-                    ProcessReset();
-                } else { /* SE ENTRO QUI NESSUNO HA ANCORA VINTO */}
-            }));
+                        ProcessReset();
+                    }
+                    else { /* SE ENTRO QUI NESSUNO HA ANCORA VINTO */}
+                }));
+            }
         }
 
         private void PosG2()
         {
-            Thread.Sleep(1);
+            //Thread.Sleep(1);
 
             //Frame
             this.Dispatcher.BeginInvoke(new Action(() =>
@@ -256,7 +267,7 @@ namespace EsWPF
 
         private void PosG1()
         {
-            Thread.Sleep(1);
+            //Thread.Sleep(1);
 
             //Frame
             this.Dispatcher.BeginInvoke(new Action(() =>
@@ -344,6 +355,8 @@ namespace EsWPF
                 timer1.Start();
                 timer2.Start();
 
+                collisionThread.Start();
+
                 st = true;
             } else
             {
@@ -357,7 +370,10 @@ namespace EsWPF
                 imgMouse.Visibility = Visibility.Hidden;
 
                 timer1.Stop();
-                timer2.Start();
+                timer2.Stop();
+
+                collisionThread.Abort();
+                collisionThread.Join();
 
                 st = false;
             }
